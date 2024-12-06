@@ -1,0 +1,45 @@
+.clean-copy-button {
+  position: relative;
+  margin: 0 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.clean-copy-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.copy-success-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  animation: fadeInOut 2s ease-in-out;
+  z-index: 1000;
+}
+
+.copy-error-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: rgba(255, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  animation: fadeInOut 2s ease-in-out;
+  z-index: 1000;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  20%, 80% { opacity: 1; }
+} 

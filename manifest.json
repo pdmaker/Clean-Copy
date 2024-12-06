@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Clean Copy",
+  "version": "0.1.0",
+  "description": "智能复制 AI 对话内容，自动适配富文本和纯文本格式",
+  "permissions": [
+    "clipboardWrite",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": ["src/content/index.js"],
+      "css": ["src/content/styles.css"]
+    }
+  ],
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  }
+} 
