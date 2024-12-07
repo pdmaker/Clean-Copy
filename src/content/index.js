@@ -1,3 +1,12 @@
+// 调试工具
+const DEBUG = false;
+
+function log(...args) {
+  if (DEBUG) {
+    console.log(...args);
+  }
+}
+
 // Markdown 工具函数
 function stripMarkdown(text) {
   return text
@@ -30,16 +39,19 @@ function convertToHtml(text) {
 
 // 监听 DOM 变化，为每个 AI 回复添加复制按钮
 const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((node) => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        // 查找所有操作按钮组
-        const actionGroups = document.querySelectorAll('div.mb-2.flex.gap-3 .items-center.justify-start.rounded-xl.p-1.flex');
-        console.log('找到按钮组数量:', actionGroups.length);
-        actionGroups.forEach(addCleanCopyButton);
-      }
+  // 使用防抖，避免频繁处理
+  clearTimeout(observer.timeout);
+  observer.timeout = setTimeout(() => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          // 查找所有操作按钮组
+          const actionGroups = document.querySelectorAll('div.mb-2.flex.gap-3 .items-center.justify-start.rounded-xl.p-1.flex');
+          actionGroups.forEach(addCleanCopyButton);
+        }
+      });
     });
-  });
+  }, 100);
 });
 
 // 添加 Clean Copy 按钮
@@ -80,18 +92,22 @@ function addCleanCopyButton(actionGroup) {
 
   // 添加点击事件
   button.addEventListener('click', () => {
-    console.log('按钮被点击');
-    // 首先尝试获取最近的消息容器
-    const messageElement = actionGroup.closest('[data-message-author-role="assistant"]')
-      ?.querySelector('.markdown.prose.w-full');
+    log('按钮被点击');
+    const article = actionGroup.closest('article');
+    if (!article) {
+      console.error('未找到消息容器');
+      return;
+    }
+    
+    const messageElement = article.querySelector('.markdown.prose.w-full.break-words.dark\\:prose-invert');
     
     if (messageElement) {
-      console.log('找到消息元素:', messageElement);
-      console.log('消息内容:', messageElement.innerText);
+      log('找到消息元素:', messageElement);
       handleCopy(messageElement);
     } else {
       console.error('未找到消息元素');
-      console.log('当前按钮的父元素结构:', actionGroup.parentElement);
+      log('article 内容:', article.innerHTML);
+      log('可用的类名:', article.querySelector('.markdown')?.classList.toString());
     }
   });
 
@@ -102,15 +118,19 @@ function addCleanCopyButton(actionGroup) {
 // 处理复制操作
 async function handleCopy(messageElement) {
   try {
-    console.log('开始复制操作');
+    log('开始复制操作');
     const markdownText = messageElement.innerText;
-    console.log('获取到的文本:', markdownText);
+    log('获取到的文本:', markdownText);
     
     // 检查文本是否为空
     if (!markdownText) {
-      console.error('获取到的文本为空');
+      log('获取到的文本为空');
       return;
     }
+
+    // 添加复制中的视觉反馈
+    messageElement.style.transition = 'opacity 0.2s';
+    messageElement.style.opacity = '0.5';
 
     // 创建包含两种格式的 ClipboardItem
     const clipboardItem = new ClipboardItem({
@@ -118,16 +138,18 @@ async function handleCopy(messageElement) {
       'text/html': new Blob([convertToHtml(markdownText)], { type: 'text/html' })
     });
 
-    console.log('准备写入剪贴板');
+    log('准备写入剪贴板');
     await navigator.clipboard.write([clipboardItem]);
     
     // 显示复制成功提示
     showCopySuccess();
   } catch (error) {
     console.error('复制失败，详细错误:', error);
-    console.error('错误堆栈:', error.stack);
     // 显示错误提示
     showCopyError();
+  } finally {
+    // 恢复原始样式
+    messageElement.style.opacity = '1';
   }
 }
 
@@ -138,7 +160,7 @@ function showCopySuccess() {
   toast.textContent = '复制成功';
   document.body.appendChild(toast);
   
-  // 2秒后移��提示
+  // 2秒后移除提示
   setTimeout(() => {
     document.body.removeChild(toast);
   }, 2000);
