@@ -13,30 +13,43 @@ function log(...args) {
 // Markdown 工具函数
 function stripMarkdown(text) {
   return text
-    .replace(/\*\*(.*?)\*\*/g, '$1') // 移除加粗
-    .replace(/\*(.*?)\*/g, '$1')     // 移除斜体
-    .replace(/`(.*?)`/g, '$1')       // 移除行内代码
-    .replace(/^#+\s+/gm, '')         // 移除标题标记
-    .replace(/^[*-]\s+/gm, '')       // 移除无序列表标记
-    .replace(/^\d+\.\s+/gm, '')      // 移除有序列表标记
-    .replace(/^\>\s+/gm, '')         // 移除引用标记
+    .replace(/```[\s\S]*?```/g, '$1')  // 移除代码块
+    .replace(/\*\*(.*?)\*\*/g, '$1')   // 移除加粗
+    .replace(/\*(.*?)\*/g, '$1')       // 移除斜体
+    .replace(/`([^`]+)`/g, '$1')       // 移除行内代码
+    .replace(/^#+\s+/gm, '')           // 移除标题标记
+    .replace(/^[-*]\s+/gm, '')         // 移除无序列表标记
+    .replace(/^\d+\.\s+/gm, '')        // 移除有序列表标记
+    .replace(/^>\s+/gm, '')            // 移除引用标记
     .trim();
 }
 
 function convertToHtml(text) {
+  // 首先处理代码块，避免内部内容被其他规则影响
+  text = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+  
   return text
+    // 内联格式
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    
+    // 标题
     .replace(/^#{6}\s+(.*?)$/gm, '<h6>$1</h6>')
     .replace(/^#{5}\s+(.*?)$/gm, '<h5>$1</h5>')
     .replace(/^#{4}\s+(.*?)$/gm, '<h4>$1</h4>')
     .replace(/^#{3}\s+(.*?)$/gm, '<h3>$1</h3>')
     .replace(/^#{2}\s+(.*?)$/gm, '<h2>$1</h2>')
     .replace(/^#{1}\s+(.*?)$/gm, '<h1>$1</h1>')
-    .replace(/^[*-]\s+(.*?)$/gm, '<li>$1</li>')
-    .replace(/^\d+\.\s+(.*?)$/gm, '<li>$1</li>')
-    .replace(/^\>\s+(.*?)$/gm, '<blockquote>$1</blockquote>')
+    
+    // 列表
+    .replace(/^(\d+)\.\s+(.*?)$/gm, '<li>$2</li>')
+    .replace(/^[-*]\s+(.*?)$/gm, '<li>$1</li>')
+    
+    // 引用
+    .replace(/^>\s+(.*?)$/gm, '<blockquote>$1</blockquote>')
+    
+    // 处理换行
     .split('\n').join('<br>');
 }
 
@@ -72,7 +85,7 @@ function addCleanCopyButton(actionGroup) {
     return;
   }
 
-  // 创建��的按钮
+  // 创建的按钮
   const button = document.createElement('button');
   button.className = 'clean-copy-button rounded-lg text-token-text-secondary hover:bg-token-main-surface-secondary';
   button.setAttribute('aria-label', isChinesePage() ? '简净复制' : 'Clean Copy');
@@ -121,11 +134,13 @@ function addCleanCopyButton(actionGroup) {
 async function handleCopy(messageElement) {
   try {
     log('开始复制操作');
-    const markdownText = messageElement.innerText;
-    log('获取到的文本:', markdownText);
+    
+    // 获取原始文本
+    const originalText = messageElement.innerText;
+    log('获取到的文本:', originalText);
     
     // 检查文本是否为空
-    if (!markdownText) {
+    if (!originalText) {
       log('获取到的文本为空');
       return;
     }
@@ -134,10 +149,21 @@ async function handleCopy(messageElement) {
     messageElement.style.transition = 'opacity 0.2s';
     messageElement.style.opacity = '0.5';
 
+    // 为富文本环境准备 HTML
+    const htmlContent = `
+      <meta charset="utf-8">
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+        ${messageElement.innerHTML}
+      </div>
+    `.trim();
+
+    // 为纯文本环境准备纯文本
+    const plainText = stripMarkdown(originalText);
+
     // 创建包含两种格式的 ClipboardItem
     const clipboardItem = new ClipboardItem({
-      'text/plain': new Blob([stripMarkdown(markdownText)], { type: 'text/plain' }),
-      'text/html': new Blob([convertToHtml(markdownText)], { type: 'text/html' })
+      'text/plain': new Blob([plainText], { type: 'text/plain' }),
+      'text/html': new Blob([htmlContent], { type: 'text/html' })
     });
 
     log('准备写入剪贴板');
@@ -147,7 +173,6 @@ async function handleCopy(messageElement) {
     showCopySuccess();
   } catch (error) {
     console.error('复制失败，详细错误:', error);
-    // 显示错误提示
     showCopyError();
   } finally {
     // 恢复原始样式
