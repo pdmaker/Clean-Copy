@@ -1,6 +1,9 @@
 // 调试工具
 const DEBUG = false;
 
+// 在文件开头添加
+let pluginEnabled = true;
+
 function log(...args) {
   if (DEBUG) {
     console.log(...args);
@@ -182,4 +185,21 @@ function showCopyError() {
 observer.observe(document.body, {
   childList: true,
   subtree: true
-}); 
+});
+
+// 监听来自 popup 的消息
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.type === 'TOGGLE_PLUGIN') {
+        pluginEnabled = request.enabled;
+        // 根据状态显示或隐藏所有复制按钮
+        toggleCopyButtons(pluginEnabled);
+    }
+});
+
+// 添加一个新函数来控制按钮的显示/隐藏
+function toggleCopyButtons(show) {
+    const buttons = document.querySelectorAll('.clean-copy-button');
+    buttons.forEach(button => {
+        button.style.display = show ? 'block' : 'none';
+    });
+} 

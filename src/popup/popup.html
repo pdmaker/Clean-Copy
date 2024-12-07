@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Copy</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <img src="../../assets/icons/icon48.png" alt="Clean Copy Logo">
+                <h1>Clean Copy</h1>
+            </div>
+            <div class="switch-container">
+                <label class="switch">
+                    <input type="checkbox" id="togglePlugin" aria-label="启用插件">
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-label">启用插件</span>
+            </div>
+        </div>
+        
+        <div class="description">
+            <p>复制 ChatGPT等 AI 产品对话内容，自动适配不同平台的粘贴格式。</p>
+            
+            <h2>支持格式</h2>
+            <div class="format-types">
+                <div class="format-item">
+                    <strong>富文本：</strong>兼容平台所需要的样式
+                </div>
+                <div class="format-item">
+                    <strong>纯文本：</strong>不带 Markdown，无需处理样式
+                </div>
+            </div>
+
+            <h2>平台表现</h2>
+            <ul class="platform-list">
+                <li>微信对话框 - 纯文本</li>
+                <li>Mac 备忘录 - 富文本</li>
+                <li>飞书文档 - 富文本</li>
+                <li>Sublime Text - 纯文本</li>
+            </ul>
+        </div>
+        <footer class="footer">
+            <span>© 2024 Clean Copy</span>
+            <span>欢迎反馈联系 <a href="mailto:hi@textgen.net">hi@textgen.net</a></span>
+        </footer>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html> 

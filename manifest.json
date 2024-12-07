@@ -5,7 +5,8 @@
   "description": "智能复制 AI 对话内容，自动适配富文本和纯文本格式，给予更好的粘贴体验",
   "permissions": [
     "clipboardWrite",
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "host_permissions": [
     "https://chatgpt.com/*"
@@ -21,5 +22,13 @@
     "16": "assets/icons/icon16.png",
     "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
   }
 } 
