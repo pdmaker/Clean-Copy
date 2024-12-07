@@ -136,4 +136,31 @@ h2 {
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+.copy-button {
+    position: relative;
+}
+
+.copy-button::before {
+    content: "复制";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background-color: #000;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.copy-button:hover::before {
+    opacity: 1;
+    visibility: visible;
 } 

@@ -9,11 +9,19 @@
     "storage"
   ],
   "host_permissions": [
+    "https://chat.openai.com/*",
     "https://chatgpt.com/*"
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src 'self'"
+  },
   "content_scripts": [
     {
-      "matches": ["https://chatgpt.com/*"],
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*"
+      ],
       "js": ["src/content/index.js"],
       "css": ["src/content/styles.css"]
     }

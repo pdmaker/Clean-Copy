@@ -57,28 +57,27 @@ const observer = new MutationObserver((mutations) => {
   }, 100);
 });
 
+// 检测页面语言
+function isChinesePage() {
+  return document.documentElement.lang.includes('zh') || 
+         document.querySelector('html').getAttribute('lang')?.includes('zh') ||
+         document.location.href.includes('/zh') ||
+         document.location.hostname.includes('.cn');
+}
+
 // 添加 Clean Copy 按钮
 function addCleanCopyButton(actionGroup) {
   // 检查是否已经添加过按钮
   if (actionGroup.querySelector('.clean-copy-button')) {
-    console.log('按钮已存在，跳过');
     return;
   }
-
-  // 查找原始复制按钮
-  const originalCopyButton = actionGroup.querySelector('[data-testid="copy-turn-action-button"]');
-  if (!originalCopyButton) {
-    console.log('未找到原始复制按钮，跳过');
-    return;
-  }
-
-  console.log('找到原始复制按钮，准备添加 Clean Copy 按钮');
 
   // 创建新的按钮
   const button = document.createElement('button');
   button.className = 'clean-copy-button rounded-lg text-token-text-secondary hover:bg-token-main-surface-secondary';
-  button.setAttribute('aria-label', 'Clean Copy');
-  
+  button.setAttribute('aria-label', isChinesePage() ? '简净复制' : 'Clean Copy');
+  button.setAttribute('data-tooltip', isChinesePage() ? '简净复制' : 'Clean Copy');
+
   // 创建按钮内容
   const buttonContent = document.createElement('span');
   buttonContent.className = 'flex h-[30px] w-[30px] items-center justify-center';
@@ -114,8 +113,8 @@ function addCleanCopyButton(actionGroup) {
     }
   });
 
-  // 将按钮插入到原始复制按钮后面
-  originalCopyButton.parentNode.insertBefore(button, originalCopyButton.nextSibling);
+  // 将按钮添加到操作栏的最后
+  actionGroup.appendChild(button);
 }
 
 // 处理复制操作
@@ -160,10 +159,23 @@ async function handleCopy(messageElement) {
 function showCopySuccess() {
   const toast = document.createElement('div');
   toast.className = 'copy-success-toast';
-  toast.textContent = '复制成功';
+  
+  // 创建图标元素
+  const icon = document.createElement('span');
+  icon.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `;
+  
+  // 创建文本元素
+  const text = document.createElement('span');
+  text.textContent = isChinesePage() ? '复制成功' : 'Copied successfully';
+  
+  toast.appendChild(icon);
+  toast.appendChild(text);
   document.body.appendChild(toast);
   
-  // 2秒后移除提示
   setTimeout(() => {
     document.body.removeChild(toast);
   }, 2000);
@@ -173,7 +185,21 @@ function showCopySuccess() {
 function showCopyError() {
   const toast = document.createElement('div');
   toast.className = 'copy-error-toast';
-  toast.textContent = '复制失败';
+  
+  // 创建图标元素
+  const icon = document.createElement('span');
+  icon.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `;
+  
+  // 创建文本元素
+  const text = document.createElement('span');
+  text.textContent = isChinesePage() ? '复制失败' : 'Copy failed';
+  
+  toast.appendChild(icon);
+  toast.appendChild(text);
   document.body.appendChild(toast);
   
   setTimeout(() => {
