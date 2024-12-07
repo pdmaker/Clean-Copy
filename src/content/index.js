@@ -72,7 +72,7 @@ function addCleanCopyButton(actionGroup) {
     return;
   }
 
-  // 创建新的按钮
+  // 创建��的按钮
   const button = document.createElement('button');
   button.className = 'clean-copy-button rounded-lg text-token-text-secondary hover:bg-token-main-surface-secondary';
   button.setAttribute('aria-label', isChinesePage() ? '简净复制' : 'Clean Copy');
@@ -159,6 +159,7 @@ async function handleCopy(messageElement) {
 function showCopySuccess() {
   const toast = document.createElement('div');
   toast.className = 'copy-success-toast';
+  toast.style.cssText = 'background-color: rgb(0, 0, 0) !important;'; // 强制使用黑色背景
   
   // 创建图标元素
   const icon = document.createElement('span');
@@ -177,7 +178,9 @@ function showCopySuccess() {
   document.body.appendChild(toast);
   
   setTimeout(() => {
-    document.body.removeChild(toast);
+    if (document.body.contains(toast)) {
+      document.body.removeChild(toast);
+    }
   }, 2000);
 }
 
@@ -185,6 +188,7 @@ function showCopySuccess() {
 function showCopyError() {
   const toast = document.createElement('div');
   toast.className = 'copy-error-toast';
+  toast.style.cssText = 'background-color: rgb(0, 0, 0) !important;'; // 强制使用黑色背景
   
   // 创建图标元素
   const icon = document.createElement('span');
@@ -203,7 +207,9 @@ function showCopyError() {
   document.body.appendChild(toast);
   
   setTimeout(() => {
-    document.body.removeChild(toast);
+    if (document.body.contains(toast)) {
+      document.body.removeChild(toast);
+    }
   }, 2000);
 }
 
