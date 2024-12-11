@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Clean Copy 简净复制，复制出更干净的 GPT AI 对话内容",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "智能复制 AI 对话内容，自动适配富文本和纯文本格式，给予更好的粘贴体验",
   "permissions": [
     "clipboardWrite",
