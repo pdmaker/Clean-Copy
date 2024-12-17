@@ -4,6 +4,11 @@
 
 代码开源，期待感兴趣的小伙伴一起共创，支持更多的 AI 平台。（比如 Claude.ai \ Perplexity.ai 、Google Gemini 等）
 
+已上架 Chrome 应用商店，[免费下载](https://chromewebstore.google.com/detail/clean-copy-%E7%AE%80%E5%87%80%E5%A4%8D%E5%88%B6%EF%BC%8C%E5%A4%8D%E5%88%B6%E5%87%BA%E6%9B%B4%E5%B9%B2%E5%87%80%E7%9A%84-g/jbdmbmgkjmigfnfiibojpmcmfbaclnbn)
+
+预览图：
+![image](https://github.com/user-attachments/assets/2282fa14-5b6c-4da5-bbc1-3430930fd026)
+
 
 ## 功能特点
 
