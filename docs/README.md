@@ -1,4 +1,4 @@
-# Clean Copy - 面向 ChatGPT 等 AI 网站的智能复制插件，简洁优雅，称心如意
+# Clean Copy - ChatGPT 智能复制插件，简洁优雅，称心如意
 
 一个浏览器插件，用于优化 ChatGPT 等AI 对话内容的复制体验。支持自动转换 Markdown 格式，根据粘贴环境智能适配富文本或纯文本格式。
 
